@@ -292,6 +292,7 @@ struct CvtColorForDisplayOptions {
  * different, the image is scaled between these two values before being converted to its final encoding.
  * - max_image_value Maximum image value
  * - colormap Colormap which the source image converted with.
+ * - bg_label Background label used when colorizing label image.
  */
 CvImageConstPtr cvtColorForDisplay(const CvImageConstPtr& source,
                                    const std::string& encoding = std::string(),
