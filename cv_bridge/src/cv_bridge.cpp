@@ -670,11 +670,23 @@ CvImageConstPtr cvtColorForDisplay(const CvImageConstPtr& source,
       img_scaled->encoding = enc::MONO8;
       cv::Mat(source->image-min_image_value).convertTo(img_scaled->image, CV_8UC1, 255.0 /
         (max_image_value - min_image_value));
+      // fill black in nan region
+      if (source->encoding == enc::TYPE_32FC1)
+        for (size_t j=0; j < source->image.rows; j++)
+          for (size_t i=0; i < source->image.cols; i++)
+            if (std::isnan(source->image.at<float>(j, i)))
+              img_scaled->image.at<uint8_t>(j, i) = 0;
     } else {
       img_scaled->encoding = enc::BGR8;
       cv::Mat(source->image-min_image_value).convertTo(img_scaled->image, CV_8UC3, 255.0 /
         (max_image_value - min_image_value));
       cv::applyColorMap(img_scaled->image, img_scaled->image, options.colormap);
+      // fill black in nan region
+      if (source->encoding == enc::TYPE_32FC1)
+        for (size_t j=0; j < source->image.rows; j++)
+          for (size_t i=0; i < source->image.cols; i++)
+            if (std::isnan(source->image.at<float>(j, i)))
+              img_scaled->image.at<cv::Vec3b>(j, i) = cv::Vec3b(0, 0, 0);
     }
     return cvtColor(img_scaled, encoding);
   }
